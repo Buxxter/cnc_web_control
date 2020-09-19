@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript">
+            
+            // ===== Edit this values for your needs ======
+            var step = 1;
+            var feed = 1000;
+            var zed_feed = 500;
+            
+            // Need to set this if you place this file outside of esp-link internal web server
+            // For example: 
+            // var your_esp_link_host = 'http://esp-link.local/'
+            var your_esp_link_host = '/'; 
+            
+            var cmd = {
+                xp: '$J=G21G91X[STEP]Y0Z0F[FEED]',
+                xm: '$J=G21G91X-[STEP]Y0Z0F[FEED]',
+                yp: '$J=G21G91X0Y[STEP]Z0F[FEED]',
+                ym: '$J=G21G91X0Y-[STEP]Z0F[FEED]',
+                zu: '$J=G21G91X0Y0Z[STEP]F[ZED_FEED]',
+                zd: '$J=G21G91X0Y0Z-[STEP]F[ZED_FEED]',
+                hm: '$J=G0Z10;G0X0Y0Z10',
+                prb: 'G21G91G38.2Z-30F80;%0D%0AG0Z0.5;%0D%0AG38.2Z-1F5',
+                z_z: 'G92Z0%3B%20$#',
+                rst: '$X',
+                xy_z: 'G92X0Y0%3B%20$#'
+            };
+            
+            function ch_sp(val) {
+                step = val;
+                document.getElementsByName('speed')[0].innerHTML = step;
+            }
+            
+            function ss(val) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() { 
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                        return;
+                }
+                xmlHttp.open("GET", your_esp_link_host + "console/send?text=" + cmd[val].replace(/\[FEED\]/g, feed).replace(/\[STEP\]/g, step).replace(/\[ZED_FEED\]/g, zed_feed) + ';%0D%0A', true); // true for asynchronous 
+                xmlHttp.send(null);
+                console.log("/console/send?text=" + cmd[val].replace(/\[FEED\]/g, feed).replace(/\[STEP\]/g, step).replace(/\[ZED_FEED\]/g, zed_feed));// + "%0D%0A");
+            }
+        </script>
+    </head>
+
+    <body>
+<!--
+        <a name=$$ onclick="ss(this.name)"> &lt;&lt;&lt; </a>
+        <button name=plom onclick="ss(this.name)">Не давай мне лог!</button>
+-->
+        
+        <table class="xy_axis">
+            <tr>
+                <td name="speed">1</td>
+                <td><button name="yp" onclick="ss(this.name);">&uArr;</button></td>
+                <td /> 
+                <td><button name="zu" onclick="ss(this.name);">Z+</button></td>
+            </tr>
+
+            <tr>
+                <td><button name="xm" onclick="ss(this.name);">&lArr;</button></td>
+                <td><button name="tmp">SPN</button></td>
+                <td><button name="xp" onclick="ss(this.name);">&rArr;</button></td>
+            </tr>
+            <tr>
+                <td />
+                <td><button name="ym" onclick="ss(this.name);">&dArr;</button></td>
+                <td />
+                <td><button name="zd" onclick="ss(this.name);">Z-</button></td>
+            </tr>
+        </table>
+        
+        <hr/>
+        <table>
+            <tr style="margin-top: 10px;">
+                <td><button onclick="ch_sp(this.innerHTML);">0.1</button></td>
+                <td><button onclick="ch_sp(this.innerHTML);">1  </button></td> 
+                <td><button onclick="ch_sp(this.innerHTML);">5  </button></td>
+                <td><button onclick="ch_sp(this.innerHTML);">10 </button></td>
+            </tr>
+        </table>
+        
+        <hr/>
+        <table>
+            <tr>
+                <td><button name="hm" onclick="ss(this.name);">&#127968;</button></td>
+                <td><button name="xy_z" onclick="ss(this.name);">XY &oslash;</button></td> 
+                <td><button name="prb" onclick="ss(this.name);">Probe</button></td>
+                <td><button name="z_z" onclick="ss(this.name);">Z &oslash;</button></td>
+            </tr>
+            <tr>
+                <td><button name="rst" onclick="ss(this.name);">Reset</button></td>
+            </tr>
+        </table>
+    </body>
+    
+    <style>
+        button {
+            width: 100%;
+        }
+        table {
+            border: 0;
+            width: 95%;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        td {
+            width: 18%;
+        }
+        
+        
+        td.btn {
+            text-align: center;
+            border: 1px;
+            background: lightgray;
+        }
+    </style>
+    
+</html>

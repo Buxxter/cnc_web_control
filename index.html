@@ -8,6 +8,7 @@
             var step = 1;
             var feed = 1000;
             var zed_feed = 500;
+            var spin_on = false;
             
             // Need to set this if you place this file outside of esp-link internal web server
             // For example: 
@@ -21,16 +22,28 @@
                 ym: '$J=G21G91X0Y-[STEP]Z0F[FEED]',
                 zu: '$J=G21G91X0Y0Z[STEP]F[ZED_FEED]',
                 zd: '$J=G21G91X0Y0Z-[STEP]F[ZED_FEED]',
-                hm: '$J=G0Z10;G0X0Y0Z10',
+                hm: '$J=G90Z15F[ZED_FEED];$J=G90X0Y0Z15F[ZED_FEED]',
                 prb: 'G21G91G38.2Z-30F80;%0D%0AG0Z0.5;%0D%0AG38.2Z-1F5',
                 z_z: 'G92Z0%3B%20$#',
                 rst: '$X',
-                xy_z: 'G92X0Y0%3B%20$#'
+                xy_z: 'G92X0Y0%3B%20$#',
+                spn_on: 'M3 S1000',
+                spn_off: 'M5'
             };
             
             function ch_sp(val) {
                 step = val;
                 document.getElementsByName('speed')[0].innerHTML = step;
+            }
+            
+            function spin_on_off() {
+                if (spin_on) {
+                    ss('spn_off');
+                    spin_on = false;
+                } else {
+                    ss('spn_on');
+                    spin_on = true;
+                }
             }
             
             function ss(val) {
@@ -62,7 +75,7 @@
 
             <tr>
                 <td><button name="xm" onclick="ss(this.name);">&lArr;</button></td>
-                <td><button name="tmp">SPN</button></td>
+                <td><button name="tmp" onclick="spin_on_off();">SPN</button></td>
                 <td><button name="xp" onclick="ss(this.name);">&rArr;</button></td>
             </tr>
             <tr>
@@ -76,6 +89,7 @@
         <hr/>
         <table>
             <tr style="margin-top: 10px;">
+                <td><button onclick="ch_sp(this.innerHTML);">0.025</button></td>
                 <td><button onclick="ch_sp(this.innerHTML);">0.1</button></td>
                 <td><button onclick="ch_sp(this.innerHTML);">1  </button></td> 
                 <td><button onclick="ch_sp(this.innerHTML);">5  </button></td>
